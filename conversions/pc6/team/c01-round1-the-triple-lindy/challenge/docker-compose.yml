@@ -126,7 +126,6 @@ x-challenge:
 services:
   pool-web:
     build: ./pool_web
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c01-triple-lindy-pool-web
     hostname: townsville-pool.pccc
     environment:
       TOKEN1: *token1_default
@@ -149,7 +148,6 @@ services:
 
   secapi:
     build: ./secapi
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c01-triple-lindy-secapi
     hostname: secapi.pccc
     environment:
       SEC_API_TOKEN: "A3F7B2E19D4C6A8F0B5E7D2C1A9F4B6E"
@@ -165,7 +163,6 @@ services:
 
   vendor-web:
     build: ./vendor_web
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c01-triple-lindy-vendor-web
     hostname: apm.pccc
     environment:
       ASPNETCORE_URLS: "http://+:80"
@@ -179,14 +176,12 @@ services:
 
   modbus-server:
     build: ./modbus_server
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c01-triple-lindy-modbus-server
     hostname: modbus.pccc
     networks:
       - competitor_net
 
   dns:
     build: ./dns
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c01-triple-lindy-dns
     hostname: dns.pccc
     # DNS is now served by the challenge server (see challengeserver HOSTS_JSON below).
     # This service is retained as a tombstone: its entrypoint.sh just prints a notice
@@ -195,7 +190,7 @@ services:
       - competitor_net
 
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

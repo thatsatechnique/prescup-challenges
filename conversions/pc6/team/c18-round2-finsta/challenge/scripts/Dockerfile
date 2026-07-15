@@ -1,4 +1,4 @@
-FROM 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+FROM pccc/challenge-server:base
 
 # Node.js for doXSS.js, paramiko for the SSH/SFTP pull of socialmedia.db
 RUN apt-get update && \

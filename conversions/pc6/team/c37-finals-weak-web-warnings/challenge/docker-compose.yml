@@ -92,7 +92,6 @@ services:
   proxy:
     build:
       context: ./website/proxy
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c37-finals-weak-web-warnings-proxy
     hostname: web.pccc
     networks:
       - competitor_net
@@ -100,7 +99,6 @@ services:
   web:
     build:
       context: ./website/web
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c37-finals-weak-web-warnings-web
     hostname: web
     environment:
       token: *tokenSerial
@@ -111,7 +109,6 @@ services:
   db:
     build:
       context: ./website/db
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c37-finals-weak-web-warnings-db
     hostname: db
     mem_limit: 1g
     command:
@@ -126,7 +123,7 @@ services:
     networks:
       - web-network
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

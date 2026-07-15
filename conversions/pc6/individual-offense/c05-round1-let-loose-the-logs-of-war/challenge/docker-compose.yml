@@ -76,8 +76,7 @@ x-challenge:
 
 services:
   web:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c05_round1_let_loose_the_logs_of_war-web
-    #build: ./web
+    build: ./web
     hostname: web
     mem_limit: 512m
     environment:
@@ -89,8 +88,7 @@ services:
       - internal_net
 
   sidecar:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c05_round1_let_loose_the_logs_of_war-sidecar
-    #build: ./sidecar
+    build: ./sidecar
     hostname: sidecar
     environment:
       TOKEN2_FLAG: *token2
@@ -98,7 +96,7 @@ services:
       - internal_net
 
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

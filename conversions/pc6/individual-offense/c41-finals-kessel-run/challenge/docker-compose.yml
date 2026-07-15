@@ -88,7 +88,6 @@ services:
   channel:
     build:
       context: ./proxies/channel
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-channel
     hostname: channel.pccc
     networks:
       - competitor_net
@@ -96,7 +95,6 @@ services:
   maelstrom:
     build:
       context: ./proxies/maelstrom
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-maelstrom
     hostname: maelstrom.pccc
     environment:
       tokenMaelstrom: *token1
@@ -106,7 +104,6 @@ services:
   maw:
     build:
       context: ./proxies/maw
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-maw
     hostname: maw.pccc
     environment:
       tokenMaw: *token2
@@ -116,7 +113,6 @@ services:
   kessel:
     build:
       context: ./proxies/kessel
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-kessel
     hostname: kessel.pccc
     environment:
       tokenKessel: *token3
@@ -124,7 +120,6 @@ services:
       - maw-kessel
   file_host: # Not actually used for grading, just hosting
     build: ./artifacts
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-file_host
     hostname: challenge.pccc
     environment:
       pc_year: "6"

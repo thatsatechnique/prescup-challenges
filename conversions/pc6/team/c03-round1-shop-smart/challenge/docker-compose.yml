@@ -100,8 +100,7 @@ x-challenge:
 
 services:
   shop-smart:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c03_round1_shop_smart-shop-smart
-    #build: ./shop-smart
+    build: ./shop-smart
     hostname: shop-smart
     environment:
       TOKEN1_FLAG: *token1
@@ -117,8 +116,7 @@ services:
       - internal_net
 
   db:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c03_round1_shop_smart-db
-    #build: ./db
+    build: ./db
     hostname: db
     environment:
       MARIADB_ROOT_PASSWORD: "ddb4f8675a94c7dacbf5124478ed0733"
@@ -129,7 +127,7 @@ services:
       - internal_net
 
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

@@ -116,7 +116,6 @@ x-challenge:
 services:
   finsta:
     build: ./finsta
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c18-round2-finsta-finsta
     hostname: finsta.pccc
     environment:
       tokenSQL: *tokenSQL-flag_default
@@ -128,7 +127,6 @@ services:
 
   grader:
     build: ./scripts
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c18-round2-finsta-grader
     hostname: challenge.pccc
     environment:
       tokenXSS: *tokenXSS-flag_default

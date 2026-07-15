@@ -1,4 +1,4 @@
-FROM 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+FROM pccc/challenge-server:base
 
 # The grading check and the in-challenge scanner both SSH into the six servers
 RUN pip install --no-cache-dir paramiko

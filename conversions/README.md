@@ -35,13 +35,22 @@ Challenges ship in the production (CTF-NG) network posture. Two ways to run one:
 # once per machine
 docker network create --driver bridge competitor_net
 
+# once — builds the shared challenge-server base image (pccc/challenge-server:base)
+# that a few challenges' customized graders build from. Harmless to run always.
+./build-base.sh
+
 cd <season>/<track>/<challenge>/challenge
 # in docker-compose.yml, comment `internal: true` and uncomment the
 # `external: true` line under competitor_net (marked "enable if running locally")
 docker compose up --build
 ```
 
-**On CTF-NG** — leave the compose file as shipped (`internal: true` active). The platform provisions networking, DNS (`*.pccc` via the challenge server), and sizing. See the individual challenge and solution READMEs for tokens, hostnames, and any per-challenge notes.
+Every service builds from source in the repo — no image is pulled from a private
+registry. The challenge server lives at [`challenge-server/`](./challenge-server/);
+services that need it build it directly, and the handful with a customized grader
+build `FROM pccc/challenge-server:base` (produced by `build-base.sh`).
+
+**On CTF-NG** — the platform provisions networking, DNS (`*.pccc` via the challenge server), and sizing; leave `internal: true` active. See the individual challenge and solution READMEs for tokens, hostnames, and any per-challenge notes.
 
 ## Status
 

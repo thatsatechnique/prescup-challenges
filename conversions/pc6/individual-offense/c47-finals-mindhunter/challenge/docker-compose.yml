@@ -165,7 +165,6 @@ services:
   perspective:
     build:
       context: ./perspective
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c47-finals-mindhunter-perspective
     hostname: perspective.pccc
     networks:
       - competitor_net
@@ -174,7 +173,6 @@ services:
   mirror1:
     build:
       context: ./mirror
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c47-finals-mindhunter-mirror
     hostname: mirror1.pccc
     environment:
       STAGE: "1"
@@ -186,7 +184,6 @@ services:
   mirror2:
     build:
       context: ./mirror
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c47-finals-mindhunter-mirror
     hostname: mirror2.pccc
     environment:
       STAGE: "2"
@@ -199,7 +196,6 @@ services:
   mirror3:
     build:
       context: ./mirror
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c47-finals-mindhunter-mirror
     hostname: mirror3.pccc
     environment:
       STAGE: "3"
@@ -213,7 +209,6 @@ services:
   mirror4:
     build:
       context: ./mirror
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c47-finals-mindhunter-mirror
     hostname: mirror4.pccc
     environment:
       STAGE: "4"
@@ -226,7 +221,7 @@ services:
       - mirror_net
 
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_RAW

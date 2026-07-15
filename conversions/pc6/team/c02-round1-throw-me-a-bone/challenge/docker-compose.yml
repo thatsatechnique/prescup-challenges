@@ -84,7 +84,6 @@ x-challenge:
 services:
   challenge-server:
     build: ./prescup-challenge-server/challenge-server
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_challenge-server
     hostname: challenge.pccc
     environment:
       GRADING_TOKEN: *token_default
@@ -95,42 +94,36 @@ services:
 
   k3s-server:
     build: ./k3s-server
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_k3s-server
     hostname: k3s-server
     networks:
       - competitor_net
 
   app-server:
     build: ./app-server
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_app-server
     hostname: app-server
     networks:
       - competitor_net
 
   cato:
     build: ./cato
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_cato
     hostname: cato
     networks:
       - competitor_net
 
   virginia:
     build: ./virginia
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_virginia
     hostname: virginia
     networks:
       - competitor_net
 
   amicus:
     build: ./amicus
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_amicus
     hostname: amicus
     networks:
       - competitor_net
 
   cassius:
     build: ./cassius
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_cassius
     hostname: cassius
     networks:
       - competitor_net

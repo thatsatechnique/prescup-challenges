@@ -98,7 +98,6 @@ services:
   exploit:
     build:
       context: ./exploit
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c34-finals-va_list_adventure-exploit
     hostname: exploit.pccc
     environment:
       tokenGlobal: *tokenGlobal
@@ -107,7 +106,6 @@ services:
   grader:
     build:
       context: ./grader
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c34-finals-va_list_adventure-grader
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

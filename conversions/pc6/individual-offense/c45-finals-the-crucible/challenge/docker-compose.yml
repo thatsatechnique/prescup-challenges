@@ -87,7 +87,6 @@ services:
   honor:
     build:
       context: ./honor
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c45-finals-the-crucible-honor
     hostname: honor.pccc
     environment:
       tokenHonor: *tokenHonor
@@ -96,7 +95,6 @@ services:
   oblivion:
     build:
       context: ./oblivion
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c45-finals-the-crucible-oblivion
     hostname: oblivion.pccc
     environment:
       tokenOblivion: *tokenOblivion
@@ -105,7 +103,6 @@ services:
   phantom:
     build:
       context: ./phantom
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c45-finals-the-crucible-phantom
     hostname: phantom.pccc
     environment:
       tokenOblivion: *tokenOblivion
@@ -114,14 +111,13 @@ services:
   champion:
     build:
       context: ./champion
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c45-finals-the-crucible-champion
     hostname: champion.pccc
     environment:
       tokenChampion: *tokenChampion
     networks:
       - competitor_net
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

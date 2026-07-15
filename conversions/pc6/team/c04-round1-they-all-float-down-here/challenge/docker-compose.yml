@@ -101,8 +101,7 @@ x-challenge:
 
 services:
   float-server:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c04_round1_they_all_float_down_here-float-server
-    #build: ./float-server
+    build: ./float-server
     hostname: float-server
     environment:
       TOKEN1: *token1
@@ -114,7 +113,7 @@ services:
       - competitor_net
 
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     cap_add:
       - NET_ADMIN

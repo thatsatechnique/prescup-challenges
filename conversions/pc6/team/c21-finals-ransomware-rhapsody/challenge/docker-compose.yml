@@ -121,7 +121,7 @@ x-challenge:
 
 services:
   challengeserver:
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    build: ../../../../challenge-server
     hostname: challenge.pccc
     networks:
       - competitor_net
@@ -137,7 +137,6 @@ services:
     build:
       context: ./corp-ubus-24lap
       dockerfile: Dockerfile
-    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c22-ransomware-rhapsody_corp-ubus-24lap:latest
     hostname: corp-ubus-24lap
     environment:
       TOKEN1: *TOKEN1

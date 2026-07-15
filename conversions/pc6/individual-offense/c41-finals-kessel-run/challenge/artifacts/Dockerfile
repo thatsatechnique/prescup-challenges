@@ -1,4 +1,4 @@
-FROM 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+FROM pccc/challenge-server:base
 
 # Required: challenge-server config
 COPY ./grader_config.yml /config.yml
