@@ -12,13 +12,15 @@ There are four (4) tokens to retrieve in this challenge. All tokens will be avai
 
 For your convenience, we've repeated some of the challenge instructions here in the challenge solution guide.
 
-Start by logging into the `kali` VM, then browse to `http://townsville-pool.pccc` to gather information about the Townsville Pool's technical operations. `ctmodbus` and `pymodbus` have been installed on the Kali VMs. A DNS server at `dns.pccc` resolves challenge hostnames — use `--dns-servers dns.pccc` with nmap scans.
+Start by logging into the `kali` VM, then browse to `http://townsville-pool.merch.codes` to gather information about the Townsville Pool's technical operations. `ctmodbus` and `pymodbus` have been installed on the Kali VMs.
+
+Finally, if you use Security Onion for creating PCAP files, make sure to enter `securityonion` in the `Sensor ID` field. Log into Security Onion at `10.4.4.4` through a browser or SSH. The Security Onion machine may take a few minutes to become available--**please be patient!**
 
 ## Question 1
 
 *What is the value of token 1 that is awarded after logging into the Townsville Pool's website as the pool president?*
 
-1. Open a web browser on your Kali VM and navigate to: `http://townsville-pool.pccc`.
+1. Open a web browser on your Kali VM and navigate to: `http://townsville-pool.merch.codes`.
 
 ![](./img/c01-01.PNG)
 
@@ -31,7 +33,7 @@ Start by logging into the `kali` VM, then browse to `http://townsville-pool.pccc
 3. The next step is to find the president's password. In a new terminal, run `cewl` to create a list of possible passwords from the website's content:
 
 ```bash
-cewl -v http://townsville-pool.pccc > passwords.txt
+cewl -v http://townsville-pool.merch.codes > passwords.txt
 ```
 
 ![](./img/c01-04.PNG)
@@ -57,7 +59,7 @@ You can see the name of the form elements used to submit the username and passwo
 7. Using the information gathered in the steps above, run the command below to brute force the login.
 
 ```bash
-sudo hydra -l jamie.johns@townsvillepool.pccc -P /home/user/passwords.txt townsville-pool.pccc http-post-form "/Home/Login:username=^USER^&password=^PASS^:Invalid email or password"
+sudo hydra -l jamie.johns@townsvillepool.merch.codes -P /home/user/passwords.txt townsville-pool.merch.codes http-post-form "/Home/Login:username=^USER^&password=^PASS^:Invalid email or password"
 ```
 
 8. Review the successful password recovery result below.
@@ -66,20 +68,20 @@ sudo hydra -l jamie.johns@townsvillepool.pccc -P /home/user/passwords.txt townsv
 
 9. Log into the pool website with the following credentials:
 
-- Email Address: `jamie.johns@townsvillepool.pccc`
-- Password: `Hydrotherapy` (*Remember, the password is randomly selected upon challenge deployment. Your password will likely be different each time you launch this challenge.*)
+- Email Address: `jamie.johns@townsvillepool.merch.codes`
+- Password: `Swimfit` (*Remember, the password is randomly selected upon challenge deployment. Your password will likely be different each time you launch this challenge.*)
 
 Upon successful login with the pool president's credentials, Token 1 is displayed.
 
 ![](./img/c01-10.PNG)
 
-The correct submission for Question 1 is: `PCCC{login_Satisfied}`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
+The correct submission for Question 1 is: `4f389016`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
 
 ## Question 2
 
 *What is the value of token 2, which is awarded after you raise the temperature of the pool to 110 degrees Fahrenheit?*
 
-1. Browse to `http://townsville-pool.pccc`. You may still have it open from solving Question 1.
+1. Browse to `http://townsville-pool.merch.codes`. You may still have it open from solving Question 1.
 
 2. Login as the pool president using the steps from Question 1. Notice the **Admin** link in the navigation bar. Click **Admin**.
 
@@ -111,17 +113,17 @@ SetMainPoolTemperature=89&AutomatedPoolManagementUsername=&AutomatedPoolManageme
 
 8. Notice that there are no values for the `AutomatedPoolManagementUsername` and `AutomatedPoolManagementPassword` form elements that were submitted. We need to find these values before we can POST a successful temperature update. Keep this browser tab open.
 
-9. We already know from the challenge instructions that third-party websites can be found on the network. Let's start with an `nmap` scan.
+9. We already know from the challenge instructions that third-party websites can be found on the external WAN located at `123.45.67.0/24`. Let's start with an `nmap` scan.
 
 ```bash
-nmap --dns-servers dns.pccc -sn $(ip route | grep "eth0" | grep -v default | awk '{print $1}')
+nmap 123.45.67.0/24
 ```
 
-The results show a website with a hostname that resolves to `apm.pccc`.
+The results show a website with an IP address of `123.45.67.150` that resolves to `apm.merch.codes`.
 
 ![](./img/c01-15.PNG)
 
-10. Browse to `http://apm.pccc`. You have located the website of the Automated Pool Management Corporation.
+10. Browse to `http://apm.merch.codes`. You have located the website of the Automated Pool Management Corporation.
 
 ![](./img/c01-16.PNG)
 
@@ -129,7 +131,7 @@ The results show a website with a hostname that resolves to `apm.pccc`.
 
 ![](./img/c01-17.PNG)
 
-12. Return to the pool website at `http://townsville-pool.pccc`. Click **Facilities**. In the list of facilities and future projects note the **Poolside_Innovations** project text:
+12. Return to the pool website at `http://townsville-pool.merch.codes`. Click **Facilities**. In the list of facilities and future projects note the **Poolside_Innovations** project text:
 
 > Poolside_Innovations
 >
@@ -167,23 +169,23 @@ Alternatively, double-click the latest `POST`. A new tab opens containing Token 
 
 ![](./img/c01-24.PNG)
 
-The correct submission for Question 2 is: `PCCC{temp_Satisfied}`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
+The correct submission for Question 2 is: `884e3b9e`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
 
 ## Question 3
 
 *What is the value of token 3, which is awarded after you disable the security cameras on the pool website?*
 
-1. Browse to `http://townsville-pool.pccc`. You may still have it open from solving Question 1 and Question 2. It does not matter if you are logged into the web site to complete this question.
+1. Browse to `http://townsville-pool.merch.codes`. You may still have it open from solving Question 1 and Question 2. It does not matter if you are logged into the web site to complete this question.
 
 2. Click **Live Cameras** to view the cameras. Here you see five pictures.
 
 ![](./img/c01-25.PNG)
 
-3. Open the browser developer tools, select the **Network**  tab, then refresh the page. Note the five `GET` requests to `secapi.pccc`.
+3. Open the browser developer tools, select the **Network**  tab, then refresh the page. Note the five `GET` requests to `10.2.2.195`.
 
 ![](./img/c01-26.PNG)
 
-4. In a new browser tab, navigate to `http://secapi.pccc`. You are greeted with a Swagger API documentation page. Here you can interact with the API.
+4. In a new browser tab, navigate to `http://10.2.2.195`. You are greeted with a Swagger API documentation page. Here you can interact with the API.
 
 ![](./img/c01-27.PNG)
 
@@ -191,7 +193,7 @@ The correct submission for Question 2 is: `PCCC{temp_Satisfied}`. Recall, this i
 
 ![](./img/c01-28.PNG)
 
-6. Click **Try it out**. The body expects some type of string value. It isn't clear *what* value is expected and the API is poorly documented. 
+6. Click **Try it out**. The body expects some type of string value. It isn't clear *what* value is expected and the API is poorly documented.
 
 ![](./img/c01-29.PNG)
 
@@ -201,71 +203,124 @@ The correct submission for Question 2 is: `PCCC{temp_Satisfied}`. Recall, this i
 
 The error message states: `"The securityToken field is required."` to POST to this API method. We haven't seen any traffic that contains a `securityToken` value so it's time to take a packet capture.
 
-8. Open a terminal on your Kali VM and start a packet capture using `tcpdump`:
+8. In a new browser tab, navigate to **pfSense** (`https://123.45.67.89`). Login with the following credentials: username: `admin` | password: `tartans`.
 
-```bash
-sudo tcpdump -i eth0 -w capture.pcap
-```
+![](./img/c01-31.PNG)
 
-9. While `tcpdump` is running, go back to the Live Cameras page and refresh the page. Then stop the capture with `Ctrl+C`.
+9. Go to **Diagnostics**, **Packet Capture**.
 
-10. Open the capture file in Wireshark:
+![](./img/c01-32.PNG)
 
-```bash
-wireshark capture.pcap
-```
+10. Change the **Capture Options** to `LAN` and set the **Max number of packets to capture** to `0`. The default is `1000`, but that is probably not enough.
 
-11. Filter by `http`. You should see an HTTP request that contains a `SecurityToken` query string value. Select this record and copy the value associated with the `SecurityToken`. Your output may be different, or you may have to inspect packets further. 
+![](./img/c01-33.PNG)
+
+11. Click **Start** to begin the packet capture.
+
+![](./img/c01-34.PNG)
+
+![](./img/c01-35.PNG)
+
+12. Go back to the View Cameras page, refresh the page, and back to pfSense. **Stop** the packet capture.
+
+![](./img/c01-36.PNG)
+
+13. **Download** the packet capture and open it in Wireshark.
+
+![](./img/c01-37.PNG)
+
+14. Filter by `http`. You should see an HTTP request that contains a `SecurityToken` query string value. Select this record and copy the value associated with the `SecurityToken`.
+
 ![](./img/c01-38.PNG)
 
-An alternative to this is running:
-
-```bash
-sudo tcpdump -r capture.pcap -A | grep -i securityToken
-```
-
-12. Go back to the Swagger API at `http://secapi.pccc`. Enter the `SecurityToken` value into the form for the `disablecameras` API. Swagger will automatically format it as JSON, so enter the value without surrounding quotes.
+15. Go back to the Swagger API at `http://10.2.2.195`. Enter the `SecurityToken` value into the form for the `disablecameras` API. Make sure to surround the value in double-quotes.
 
 ![](./img/c01-39.PNG)
 
-13. Click **Execute**. Clicking Execute should produce an HTTP 200 success message with a return value of `true`.
+16. Click **Execute**. Clicking Execute should produce an HTTP 200 success message with a return value of `true`.
 
 ![](./img/c01-40.PNG)
 
-14. Go back to the Live Cameras page and refresh. If you successfully disabled the cameras, the pictures should not be visible, and Token 3 is shown.
+17. Go back to the Live Cameras page and refresh. If you successfully disabled the cameras, the pictures should not be visible, and Token 3 is shown.
 
 ![](./img/c01-41.PNG)
 
-The correct submission for Question 3 is: `PCCC{camera_Satisfied}`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
+The correct submission for Question 3 is: `98045a94`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
 
 ## Question 4
 
 *What is the value of token 4, which is awarded after you change the pH, chlorine and total alkalinity values?*
 
-1. Browse to `http://townsville-pool.pccc`. You may still have it open from solving the previous questions.
+1. Browse to `http://townsville-pool.merch.codes`. You may still have it open from solving the previous questions.
 
 2. While logged in as the pool president, click **Pool Conditions**. The Pool Chemical Balancing System page shows various readings from the pool chemical balances. You are tasked with changing three water balance values:
    - Decrease the pH from 7.0 to 6.0
    - Increase the chlorine level from 3 ppm to 4 ppm
    - Decrease the total alkalinity from 100 ppm to 70 ppm
 
-3. The Pool Conditions page is displaying real-time data from somewhere. Right-click the page and choose **View Page Source**. In the HTML source, you will find a comment left by the developers that reveals the SCADA data source — a Modbus server at `modbus.pccc` on port `502`, along with the holding register addresses used for pool chemical data.
+3. Locating the current water balance values on this page will be helpful. The browser’s developer tools won’t provide anything useful, so we'll check the network traffic again. In a new browser tab, navigate to **pfSense** (`https://123.45.67.89`). Login with the following credentials: username: `admin` | password: `tartans`.
 
-4. We can get the Modbus server's IP address by running:
+![](./img/c01-31.PNG)
+
+![](./img/c01-31.PNG)
+
+4. Go to **Diagnostics**, **Packet Capture**.
+
+![](./img/c01-32.PNG)
+
+5. Change **Capture Options** to `LAN` and set the **Max number of packets to capture** to `0`. The default is `1000`, but that isn't enough.
+
+![](./img/c01-33.PNG)
+
+6. Click **Start** to begin the packet capture.
+
+![](./img/c01-34.PNG)
+
+![](./img/c01-35.PNG)
+
+7. Go back to the Pool Conditions page, refresh, then back to pfSense and **Stop** the packet capture.
+
+![](./img/c01-36.PNG)
+
+8. **Download** the packet capture and open it in Wireshark.
+
+9. We want to know what is communicating with the pool web server. We can get the IP address by opening a terminal and entering the following command:
 
 ```bash
-ping modbus.pccc
+ping townsville-pool.merch.codes
 ```
 
-5. Double-click the **ctmodbus** shortcut on the Kali VM Desktop (or run `ctmodbus` in a terminal) and connect to the Modbus server using its IP address:
+![](./img/c01-42.PNG)
+
+This returns the IP address: `10.7.7.99`.
+
+10. In Wireshark, filter the packet capture by the web server's IP address:
 
 ```bash
-connect tcp <modbus.pccc-ip>
+ip.src == 10.7.7.99
+```
+
+You should see Modbus traffic in the protocol field for some of the traffic.
+
+![](./img/c01-43.PNG)
+
+11. Change the filter to `modbus`. The filtered packet capture shows us that there is a server listening on port `502` at `10.1.1.125`.
+
+![](./img/c01-44.PNG)
+
+12. Double-click the **ctmodbus** shortcut on the Kali VM Desktop and connect to `10.1.1.125`:
+
+```bash
+connect tcp 10.1.1.125
 ```
 
 ![](./img/c01-45.PNG)
 
-6. The HTML comment told us that three holding registers contain the pool chemical data (HR0=pH, HR1=FAC, HR2=Alkalinity). Read the values in the holding registers. When you read the first three holding register values using the commands below, you will see that the values match the ones you need to change on the Pool Conditions web page.
+13. In Wireshark, further examination of the packet capture shows that three of the holding registers have been queried.
+
+![](./img/c01-46.PNG)
+
+14. Next, read the values in the holding registers. When you read the first three holding register values using the commands below, you will see that the values match the ones you need to change on the Pool Conditions web page.
 
 ```bash
 read holdingRegisters 0
@@ -291,4 +346,4 @@ Refresh the `Pool Conditions` page. If you changed the correct values, Token 4 i
 
 ![](./img/c01-50.PNG)
 
-The correct submission for Question 4 is: `PCCC{scada_Satisfied}`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
+The correct submission for Question 4 is: `effd996e`. Recall, this is an infinity-style question and the token will vary for your challenge instance.
