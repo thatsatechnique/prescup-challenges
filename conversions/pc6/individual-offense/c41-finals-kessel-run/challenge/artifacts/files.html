@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% set title='challenge.pccc - Files' %}
+<h2>Download a file</h2>
+
+{% block content %}
+<img src="{{ url_for('static', filename='KesselRun.png') }}" alt="A simple network diagram showing 4 hosts: channel.pccc, maelstrom.pccc, maw.pccc, and kessel.pccc. There is an arrow pointing from channel to maelstrom (labelled /maelstrom), maelstrom to maw (labelled /maw), and maw to kessel (labelled /kessel), representing each of the proxy hops.">
+<div class='left'>
+    {% for filename, path in files.items() %}
+        <a href="{{ url_for('.get_file', path=filename) }}">{{filename}}</a><br>
+    {% endfor %}
+</div>
+{% endblock %}

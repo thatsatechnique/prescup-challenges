@@ -1,0 +1,141 @@
+x-challenge:
+  name: "Throw Me A Bone"
+  icon: "TbShieldSearch"
+  description: |
+    # Throw Me A Bone
+
+    It can be *ruff* keeping an environment secure! Make sure users aren't using easily guessed passwords and apply remediations based on the results of a recent vulnerability scan.
+
+    **NICE Work Role**
+
+    - [Vulnerability Analysis](https://niccs.cisa.gov/workforce-development/nice-framework/)
+
+    **NICE Tasks**
+
+    - [T1118](https://niccs.cisa.gov/workforce-development/nice-framework/): Identify vulnerabilities
+    - [T1341](https://niccs.cisa.gov/workforce-development/nice-framework/): Perform required reviews
+
+    ## Background
+
+    Shoot! The vulnerability scanner hasn't run for... well, a long time. **There are six servers in the environment.** Review a recent vulnerability report and resolve the vulnerabilities found in your environment. Identify any user accounts in the MERCH Domain that are using weak or commonly used passwords.
+
+    ## Getting Started
+
+    >**Caution!** Do *not* modify the `user` or `scanuser` accounts in any way as they are used for environment access.
+
+    First, use the provided **NTDS.dit** and **HKLM/SYSTEM** files (available at `http://challenge.pccc/files`) to identify any MERCH Domain user accounts that use weak or commonly used passwords. There are no inactive users in the Active Directory export meaning all users in the export are active.
+
+    Next, use the PDF vulnerability report available at `http://challenge.pccc/files` to remediate outstanding HIGH and MEDIUM vulnerabilities in the environment.
+
+    >**Note:** The vulnerability report was generated against a previous deployment of the environment, so the IP addresses listed in the report no longer apply. The vulnerability findings are still valid - you will need to identify which of the current servers each finding applies to. Use the in-environment scanner to confirm.
+
+    An "in challenge" vulnerability scanner is available at `http://challenge.pccc:5555` for you to verify a system has been remediated.
+
+    Once all systems are complete, run the Grading Check at `http://challenge.pccc` to receive your token and the answer to Question 2. If your Grading Check fails, remember to use the scanner (`http://challenge.pccc:5555`) to validate that you have all of the necessary remediations in place on each of the six servers.
+
+    ## System and Tool Credentials
+
+    |system/tool|username|password|
+    |-----------|--------|--------|
+    |kali|user|password|
+    |all servers|user|tartans|
+
+    ## Note
+
+    Attacking or unauthorized access to `challenge.pccc` is forbidden. You may only use the provided web pages to view challenge progress and download any challenge artifacts that are provided.
+
+    ## Challenge Questions
+
+    1. What is the username of the MERCH Domain account which is using a weak and/or commonly used password?
+    2. What is the 8-digit hexadecimal code you received from the grading check (`challenge.pccc`) after remediating vulnerabilities on all six servers in the environment?
+
+  summary: |
+    Identify weak passwords and remediate vulnerabilities across six servers in the environment.
+
+  tags:
+    - season:pc6
+    - track:teams
+    - round:1
+    - role:vulnerability-analysis
+
+  templates:
+    grading_token: &token_template "fake.bothify('????????', letters='abcdef0123456789')"
+
+  variables:
+    grading_token:
+      template: *token_template
+      default: &token_default "a3f7b2c1"
+
+  questions:
+    - name: "Question 1"
+      body: "What is the username of the MERCH Domain account which is using a weak and/or commonly used password?"
+      placeholder: "username"
+      points: 330
+      answer: "ejohnson"
+      max_attempts: 100
+
+    - name: "Question 2"
+      body: "What is the 8-digit hexadecimal code you received from the grading check after remediating vulnerabilities on all six servers?"
+      placeholder: "8-digit hex code"
+      points: 770
+      answer: *token_default
+      max_attempts: 100
+
+services:
+  challenge-server:
+    build: ./prescup-challenge-server/challenge-server
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_challenge-server
+    hostname: challenge.pccc
+    environment:
+      GRADING_TOKEN: *token_default
+      pc_year: "6"
+      challenge_name: "Throw Me A Bone"
+    networks:
+      - competitor_net
+
+  k3s-server:
+    build: ./k3s-server
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_k3s-server
+    hostname: k3s-server
+    networks:
+      - competitor_net
+
+  app-server:
+    build: ./app-server
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_app-server
+    hostname: app-server
+    networks:
+      - competitor_net
+
+  cato:
+    build: ./cato
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_cato
+    hostname: cato
+    networks:
+      - competitor_net
+
+  virginia:
+    build: ./virginia
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_virginia
+    hostname: virginia
+    networks:
+      - competitor_net
+
+  amicus:
+    build: ./amicus
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_amicus
+    hostname: amicus
+    networks:
+      - competitor_net
+
+  cassius:
+    build: ./cassius
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c02_cassius
+    hostname: cassius
+    networks:
+      - competitor_net
+
+networks:
+  competitor_net:
+    internal: true
+#    external: true

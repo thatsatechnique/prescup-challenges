@@ -1,0 +1,143 @@
+x-challenge:
+  name: "Kessel Run"
+  icon: TbRoute
+  summary: >
+    You are the legendary smuggler, Scan Solo. 
+    You're reworking the HTTP (Hyperspace Tunnel Transfer Protocol) drive in the Millennium Packet and believe you can make the Kessel Run in only 3 proxsecs (1 proxsec = 1 proxy hop).
+
+    Can you pull off this impossible HTTP smuggling through the volatile Hackadese Maelstrom surrounding Kessel?
+
+  description: |
+    **NICE Work Roles**
+
+    - [Exploitation Analysis](https://niccs.cisa.gov/workforce-development/nice-framework/)
+    - [Vulnerability Analysis](https://niccs.cisa.gov/workforce-development/nice-framework/)
+    - [Secure Software Development](https://niccs.cisa.gov/workforce-development/nice-framework/)
+
+    **NICE Tasks**
+
+    - [T1091](https://niccs.cisa.gov/workforce-development/nice-framework/): Perform authorized penetration testing on enterprise network assets.
+    - [T1118](https://niccs.cisa.gov/workforce-development/nice-framework/): Identify vulnerabilities.
+    - [T1262](https://niccs.cisa.gov/workforce-development/nice-framework/): Identify programming code flaws.
+
+    ## Background
+
+    Use the provided Kali machine to craft a "single" HTTP request to bypass three different proxies to reach `kessel.pccc`. You'll need to smuggle your way through `channel.pccc`, `maelstrom.pccc`, and `maw.pccc` to finally reach `kessel.pccc`.
+
+    ## Getting Started
+
+    A network diagram demonstrating your path to reach Kessel can be downloaded from `challenge.pccc/files` from your Kali machine. Each proxy server has three paths available, one named after itself, one named `/token`, and one named after the next proxy in the chain (requests to this path are forwarded to that next proxy). Each server is running on port `8080`.
+
+    You can download a copy of the proxies and a script to run them from `challenge.pccc/files`. The provided `run.sh` script runs the proxies on `localhost` with `channel.pccc` on 8080, `maelstrom.pccc` on 8081, `maw.pccc` on 8082, and `kessel.pccc` on 8083. The `run.sh` command otherwise runs the proxies as described above, logging output to `stdout` and `{proxy_name}.log` files matching each of the proxies.
+
+    ## Submission
+
+    There are 3 tokens to retrieve in this challenge. Each token is a 12-character hexadecimal value.
+
+    - Token 1: Retrieve the token found at `/token` on `maelstrom.pccc` after passing through `channel.pccc`.
+    - Token 2: Retrieve the token found at `/token` on `maw.pccc` after passing through `maelstrom.pccc`.
+    - Token 3: Retrieve the token found at `/token` on `kessel.pccc` after passing through `maw.pccc`.
+
+    ## System and Tool Credentials
+
+    |system/tool|username|password|
+    |-----------|--------|--------|
+    |kali-kessel|user|password|
+
+    ## Note
+
+    Attacking or unauthorized access to `challenge.pccc` is forbidden. You may only use the provided web page to view challenge progress and download any challenge artifacts that are provided.
+  tags:
+    - season:pc6
+    - track:offense
+    - round:finals
+    - role:exploitation-analyst
+    - role:vulnerability-analysis
+    - topics:web
+  variables:
+    token1:
+      template: fake.bothify('PCCC{Maelstrom-????????}')
+      default: &token1 'PCCC{Maelstrom}'
+    token2:
+      template: fake.bothify('PCCC{Maw-????????}')
+      default: &token2 'PCCC{Maw}'
+    token3:
+      template: fake.bothify('PCCC{Kessel-????????}')
+      default: &token3 'PCCC{Kessel}'
+  questions:
+    - name: "Token 1 - Maelstrom.pccc"
+      body: "Enter the token found at `/token` on `maelstrom.pccc` after passing through `channel.pccc`"
+      points: 700
+      answer: *token1
+      max_attempts: 100
+      placeholder: "PCCC{??????????????????}"
+    - name: "Token 2 - Maw.pccc"
+      body: "Enter the token found at `/token` on `maw.pccc` after passing through `maelstrom.pccc`."
+      points: 1050
+      answer: *token2
+      max_attempts: 100
+      placeholder: "PCCC{????????????}"
+    - name: "Token 3 - Kessel.pccc"
+      body: "Enter the token found at `/token` on `kessel.pccc` after passing through `maw.pccc`."
+      points: 1750
+      answer: *token3
+      max_attempts: 100
+      placeholder: "PCCC{???????????????}"
+
+services:
+  channel:
+    build:
+      context: ./proxies/channel
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-channel
+    hostname: channel.pccc
+    networks:
+      - competitor_net
+      - channel-maelstrom
+  maelstrom:
+    build:
+      context: ./proxies/maelstrom
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-maelstrom
+    hostname: maelstrom.pccc
+    environment:
+      tokenMaelstrom: *token1
+    networks:
+      - channel-maelstrom
+      - maelstrom-maw
+  maw:
+    build:
+      context: ./proxies/maw
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-maw
+    hostname: maw.pccc
+    environment:
+      tokenMaw: *token2
+    networks:
+      - maelstrom-maw
+      - maw-kessel
+  kessel:
+    build:
+      context: ./proxies/kessel
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-kessel
+    hostname: kessel.pccc
+    environment:
+      tokenKessel: *token3
+    networks:
+      - maw-kessel
+  file_host: # Not actually used for grading, just hosting
+    build: ./artifacts
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c41-finals-kessel-run-file_host
+    hostname: challenge.pccc
+    environment:
+      pc_year: "6"
+      challenge_name: Kessel Run
+    networks:
+      - competitor_net
+
+networks:
+  channel-maelstrom:
+    internal: true
+  maelstrom-maw:
+    internal: true
+  maw-kessel:
+    internal: true
+  competitor_net:
+    internal: true

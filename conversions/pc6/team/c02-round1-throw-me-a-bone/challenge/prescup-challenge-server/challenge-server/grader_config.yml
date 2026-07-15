@@ -1,0 +1,18 @@
+startup:
+  scripts:
+    - empty.py
+
+hosted_files:
+  enabled: true
+
+grading:
+  enabled: true
+  mode: button
+  grading_script: c02_grading_check.py
+  rate_limit: 0
+  token_location: guestinfo
+
+  parts:
+    GradingCheck1:
+      token_name: GRADING_TOKEN
+      text: "Click Grade Challenge to check if all vulnerabilities have been remediated on all six servers."

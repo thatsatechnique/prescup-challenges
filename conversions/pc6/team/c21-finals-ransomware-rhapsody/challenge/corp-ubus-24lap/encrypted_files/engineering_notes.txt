@@ -1,0 +1,2 @@
+Build status remains degraded. Backups were not mounted at the time of incident.
+Do not trust temporary paths at a glance.

@@ -1,0 +1,22 @@
+startup:
+  scripts:
+    - empty.py
+
+hosted_files:
+  enabled: true
+
+grading:
+  enabled: true
+  # text mode: the competitor gets one text box per part; their entries are passed to
+  # grading.py as positional arguments (GradingName -> argv[1], GradingPlayer -> argv[2]).
+  mode: text
+  grading_script: grading.py
+  rate_limit: 0
+  token_location: guestinfo
+  parts:
+    GradingName:
+      token_name: tokenName
+      text: "Token 1 - Enter the leaked address of `char playerName[100]` (hex)."
+    GradingPlayer:
+      token_name: tokenPlayer
+      text: "Token 2 - Enter the leaked address of the global `player` struct (hex)."

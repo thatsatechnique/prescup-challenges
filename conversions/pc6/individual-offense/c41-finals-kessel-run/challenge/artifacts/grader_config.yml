@@ -1,0 +1,17 @@
+startup:
+  scripts:
+    - empty.py
+
+hosted_files:
+  enabled: true
+
+grading:
+  enabled: false
+  mode: button
+  grading_script: empty.py
+  rate_limit: 0
+  token_location: guestinfo
+  parts:
+    A:
+      token_name: A
+      text: ""

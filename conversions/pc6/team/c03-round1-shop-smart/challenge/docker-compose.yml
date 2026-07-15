@@ -1,0 +1,147 @@
+x-challenge:
+  name: Shop SMart
+  description: |
+    # Shop SMart
+
+    Exploit the vulnerabilities in the S-Mart storefront to recover four hidden tokens.
+
+    **NICE Work Roles**
+
+    - [Exploitation Analysis](https://niccs.cisa.gov/tools/nice-framework/)
+
+    **NICE Tasks**
+
+    - [T1359](https://niccs.cisa.gov/tools/nice-framework/): Perform penetration testing
+
+    ## Background
+
+    S-Mart is a recently launched e-commerce platform selling a wide range of household goods. A routine security assessment has flagged the application as potentially vulnerable to several of the OWASP Top Ten web application risks.
+
+    Your mission: exploit the vulnerabilities in the S-Mart storefront to recover four hidden tokens.
+
+    ## Getting Started
+
+    Browse to the S-Mart storefront at `http://shop-smart` to begin your assessment.
+
+    Knowledge of the [OWASP Top Ten](https://owasp.org/www-project-top-ten/) will be useful for this challenge.
+
+    ## Tokens
+
+    - Token 1: Log in as an administrator user
+    - Token 2: Access bcampbell's order history
+    - Token 3: Retrieve the token3.txt file from the /var/www/ directory
+    - Token 4: Check out with the hidden chainsaw product
+
+    ## System and Tool Credentials
+
+    |system/tool|username|password|
+    |-----------|--------|--------|
+    |kali|user|password|
+    |`http://shop-smart`|N/A|N/A|
+
+  icon: TbShoppingCart
+  summary: |
+    Exploit common web application vulnerabilities in an e-commerce storefront
+    to recover four tokens.
+
+  tags:
+    - season:pc6
+    - track:teams
+    - round:1
+    - role:exploitation-analyst
+    - topics:web
+
+  variables:
+    token1:
+      template: "fake.bothify('PCCC{?#?#?#?#}')"
+      default: &token1 "a1b2c3d4"
+    token2:
+      template: "fake.bothify('PCCC{?#?#?#?#}')"
+      default: &token2 "e5f6a7b8"
+    token3:
+      template: "fake.bothify('PCCC{?#?#?#?#}')"
+      default: &token3 "c9d0e1f2"
+    token4:
+      template: "fake.bothify('PCCC{?#?#?#?#}')"
+      default: &token4 "a3b4c5d6"
+
+  questions:
+    - name: "Question 1"
+      body: |
+        Enter the token received from logging in as an admin user.
+      points: 250
+      placeholder: "PCCC{token_value}"
+      answer: *token1
+      max_attempts: 100
+
+    - name: "Question 2"
+      body: |
+        Enter the token from bcampbell's order history.
+      points: 250
+      placeholder: "PCCC{token_value}"
+      answer: *token2
+      max_attempts: 100
+
+    - name: "Question 3"
+      body: |
+        Enter the value of the token3.txt file found in the /var/www/ directory.
+      points: 250
+      placeholder: "PCCC{token_value}"
+      answer: *token3
+      max_attempts: 100
+
+    - name: "Question 4"
+      body: |
+        Enter the token for checking out with the chainsaw.
+      points: 250
+      placeholder: "PCCC{token_value}"
+      answer: *token4
+      max_attempts: 100
+
+services:
+  shop-smart:
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c03_round1_shop_smart-shop-smart
+    #build: ./shop-smart
+    hostname: shop-smart
+    environment:
+      TOKEN1_FLAG: *token1
+      TOKEN2_FLAG: *token2
+      TOKEN3_FLAG: *token3
+      TOKEN4_FLAG: *token4
+      DB_HOST: db
+      DB_USER: website
+      DB_PASS: "tartans@1"
+      DB_NAME: ecommerce
+    networks:
+      - competitor_net
+      - internal_net
+
+  db:
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc6/c03_round1_shop_smart-db
+    #build: ./db
+    hostname: db
+    environment:
+      MARIADB_ROOT_PASSWORD: "ddb4f8675a94c7dacbf5124478ed0733"
+      MARIADB_DATABASE: ecommerce
+      MARIADB_USER: website
+      MARIADB_PASSWORD: "tartans@1"
+    networks:
+      - internal_net
+
+  challengeserver:
+    image: 253388214223.dkr.ecr.us-east-1.amazonaws.com/pc7/challenge-server
+    hostname: challenge.pccc
+    cap_add:
+      - NET_ADMIN
+    environment:
+      pc_year: "6"
+      challenge_name: "Shop SMart"
+    networks:
+      - competitor_net
+
+networks:
+  competitor_net:
+    #external: true
+    internal: true
+  internal_net:
+    internal: true
