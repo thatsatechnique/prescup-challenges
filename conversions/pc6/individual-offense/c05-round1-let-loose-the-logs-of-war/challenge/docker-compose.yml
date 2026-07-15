@@ -1,0 +1,114 @@
+x-challenge:
+  name: Let Loose the Logs of War
+  description: |
+    # Let Loose the Logs of War
+
+    Cry "Havoc!", and exploit a web server running in a Docker container to retrieve tokens.
+
+    **NICE Work Roles**
+
+    - [Exploitation Analyst](https://niccs.cisa.gov/tools/nice-framework/)
+    - [Vulnerability Analyst](https://niccs.cisa.gov/tools/nice-framework/)
+
+    **NICE Tasks**
+
+    - [T0266](https://niccs.cisa.gov/tools/nice-framework/): Perform penetration testing as required for new or updated applications.
+    - [T0591](https://niccs.cisa.gov/tools/nice-framework/): Perform analysis for target infrastructure exploitation activities.
+
+    ## Background
+
+    Exploit a web server running in a Docker container to retrieve two tokens. One from inside the container, one from the host that runs it.
+
+    ## Getting Started
+
+    Navigate to `http://web` and probe for any vulnerabilities in the web server. Use the `/home/user/wordlist.txt` on Kali to perform a brute force attack with the username `Admin`. Once you've gained access, explore the system to uncover and retrieve the two tokens.
+
+    Please note: The web server may take several minutes to start up.
+
+    ## System and Tool Credentials
+
+    |system/tool|username|password|
+    |-----------|--------|--------|
+    |kali|user|password|
+
+    ## Tokens
+
+    - Token 1: Enter Token 1 found in the `/` directory of the web server container.
+    - Token 2: Enter Token 2 found in the `/home/user/` directory of the host system after breaking out of the Tomcat container accessed in Question 1.
+
+
+  icon: TbSword
+  summary: |
+    Cry "Havoc!", and exploit a web server running in a Docker container to retrieve tokens.
+
+  tags:
+    - season:pc6
+    - track:offense
+    - round:1
+    - role:exploitation-analyst
+    - role:vulnerability-analysis
+    - topics:web
+
+  variables:
+    token1:
+      template: "fake.bothify('PCCC{?#?#?#?#}')"
+      default: &token1 "PCCC{a1b2c3d4}"
+    token2:
+      template: "fake.bothify('PCCC{?#?#?#?#}')"
+      default: &token2 "PCCC{e5f6a7b8}"
+
+  questions:
+    - name: "Question 1"
+      body: |
+        Enter Token 1 found in the `/` directory of the web server container.
+      points: 450
+      placeholder: "PCCC{token_value}"
+      answer: *token1
+      max_attempts: 100
+
+    - name: "Question 2"
+      body: |
+        Enter Token 2 found in the `/home/user/` directory of the host system after breaking out of the Tomcat container accessed in Question 1.
+      points: 1050
+      placeholder: "PCCC{token_value}"
+      answer: *token2
+      max_attempts: 100
+
+services:
+  web:
+    build: ./web
+    hostname: web
+    mem_limit: 512m
+    environment:
+      TOKEN1_FLAG: *token1
+      SHIM_HOST: sidecar
+      SHIM_PORT: "2375"
+    networks:
+      - competitor_net
+      - internal_net
+
+  sidecar:
+    build: ./sidecar
+    hostname: sidecar
+    environment:
+      TOKEN2_FLAG: *token2
+    networks:
+      - internal_net
+
+  challengeserver:
+    build: ../../../../challenge-server
+    hostname: challenge.pccc
+    cap_add:
+      - NET_ADMIN
+    environment:
+      pc_year: "6"
+      challenge_name: "Let Loose the Logs of War"
+    networks:
+      - competitor_net
+
+networks:
+  competitor_net:
+    #external: true
+    internal: true
+  internal_net:
+    internal: true
