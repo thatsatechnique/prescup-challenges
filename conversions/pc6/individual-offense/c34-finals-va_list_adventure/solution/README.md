@@ -193,7 +193,7 @@ $5 = {
 
 Let's try our exploit now by providing `AAAAAAAAAAAAAA`(that's 14 A's). Use `n` to continue the program in gdb, which will pause to accept input where you can enter the A's (note nothing is printed, it just silently hangs waiting for input). Once that is complete, use `p l` again to print the `va_list` or print the stack with `context stack`.
 
-![name-gdb-valist_smashed_menuPrompt.png](./imgs/name-gdb-valist_smashed_menuPrompt.png)
+![A GEF/gdb session paused in menuPrompt() after entering 14 "A" characters. The `p l` command prints the va_list structure, whose gp_offset field now holds 0x41414141 — the injected "A" bytes (0x41) have smashed the va_list. The source view at main.c:41 and the register/stack backtrace are also visible.](./imgs/name-gdb-valist_smashed_menuPrompt.png "va_list gp_offset smashed to 0x41414141 in gdb")
 
 Switch to a new terminal and let's try running this outside of gdb. You can use the following python to make it easier.
 

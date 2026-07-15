@@ -35,7 +35,7 @@ hashcat hash.txt wordlist.txt
 
 9. In the `hashcat` output we see a hash that was cracked with a password `Winter2024!`. 
 
-![Output from hashcat command](./img/hashcat-output.png)
+![hashcat output for NTLM mode 1000 against hash.txt using wordlist.txt. The status is Exhausted with 1/6 digests recovered; the cracked result `7209d1e2b55d242551d2e7aba8604e47:Winter2024!` is highlighted at the top, revealing the password "Winter2024!".](./img/hashcat-output.png "Cracking the NTLM hash with hashcat")
 
 
 ```bash
@@ -52,7 +52,7 @@ cat hash.txt | grep 7209d1e2b55d242551d2e7aba8604e47
 
 It matches the password hash for user `ejohnson`.
 
-![Password match for ejohnson](./img/ejohnson.png)
+![A Kali terminal running `cat hash.txt | grep 7209d1e2b55d242551d2e7aba8604e47`, returning the line `merch.codes\ejohnson:1103:...:7209d1e2b55d242551d2e7aba8604e47:::` with the username ejohnson highlighted — mapping the cracked NTLM hash to the user ejohnson.](./img/ejohnson.png "Cracked hash belongs to user ejohnson")
 
 The answer to Question 1 is: `ejohnson`.
 

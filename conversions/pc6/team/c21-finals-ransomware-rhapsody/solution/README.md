@@ -13,7 +13,7 @@ Begin this challenge by SSH into the target machine using the password `tartans`
 ssh user@corp-ubus-24lap
 ```
 
-![SSH login screenshot](img/c21-q1-logo.png)
+![Terminal SSH session into corp-ubus-24lap showing a large ASCII-art skull banner MOTD ending with the taunt "We are the w4Nt3D. Let's play a game, shall we?", followed by the password prompt and a successful login to the user@c8a331efb99c shell.](img/c21-q1-logo.png "Successful SSH login to the victim machine")
 
 ## Question 1
 
@@ -35,7 +35,7 @@ find / -user user ! -path '/proc*' 2>/dev/null | more
 
 As we review the results, we see a mass of results that look interesting: 
 
-![image showing results of above command](img/c21-q1-find-results.png)
+![Output of the find command listing files owned by the user account: a /tmp systemd-private ntpupdate-timezone.service path, /tmp/.cache/W3_WANT_Y0U.zip, and the hidden /home/user/.cef22268edda directory filled with dozens of 32-hex-character .wNTD files, with a red arrow pointing at the hidden directory of encrypted corporate files.](img/c21-q1-find-results.png "find results revealing the hidden encrypted-files directory")
 
 #### Answer
 Given the resulting files are in `/home/user/{TOKEN1}` where `TOKEN1` is a directory name beginning with "." and containing 12 alphanumeric characters. In our example, `.cef22268edda` is the value of TOKEN1.
@@ -50,7 +50,7 @@ Given the resulting files are in `/home/user/{TOKEN1}` where `TOKEN1` is a direc
 
 **Using the same command**
 
-![image showing output from find command](img/c21-q2-find.png)
+![Close-up of the find command output with a red arrow highlighting the /tmp/systemd-private-...-ntpupdate-timezone.service/cef22268edda file, shown alongside the /tmp/.cache/W3_WANT_Y0U.zip archive.](img/c21-q2-find.png "find output showing the decryptor binary and the password-protected zip")
 
 2. The first file `W3_WANT_YOU.zip` is pretty obvious. The second file highlighted is a little less obvious, but matches our hidden directory name (without the leading `.`)
 
@@ -58,11 +58,11 @@ Let's inspect these files to see what we can figure out.
 
 3. The zip file looks to be a regular, password-protected zip file.
 
-![image showing zip inspection](img/zip-inspection.png)
+![Terminal in /tmp/.cache where "file W3_WANT_Y0U.zip" reports "Zip archive data, at least v2.0 to extract, compression method=deflate", and "unzip W3_WANT_Y0U.zip" prompts for a password to extract tmp/.cache/w4Nt3D.txt.](img/zip-inspection.png "Inspecting the password-protected W3_WANT_Y0U.zip archive")
 
 4. We don't have a password guess at this point, so let's check out the other file too:
 
-![image showing decryptor file example](img/c21-q2-decrypter1.png)
+![Terminal where "file" identifies the cef22268edda file as a "Python script, ASCII text executable", then running ./cef22268edda launches a tool banner "[◁]3CRYPT0R" that prompts "Enter encrypted file folder without ending slash (e.g. /home/user/file/subfile):", with red arrows marking the file type and the decryptor prompt.](img/c21-q2-decrypter1.png "Launching the recovered 3CRYPT0R decryptor script")
 
 Well we don't have a decryption key either.  We have found the decryptor and our question is about the AES IV value so let's dig in here! 
 
@@ -72,11 +72,11 @@ To complete this objective, challengers should view the `encrypted directory` pr
 
 1. According `to the intel`, the syndicate likes to place hints in `plain sight`. In this case, the IV is the `name` of *one of these files* (without the extension).
 
-![Contents of the ransomed folder](img/c21-q2-ls.png)
+![ls listing of the hidden .cef22268edda directory showing about 100 encrypted .wNTD files, each named with a 32-hex-character string of identical length, with the file 4e144d50465aa26451270056b66c8cd8.wNTD highlighted in a red box as the filename that doubles as the AES IV.](img/c21-q2-ls.png "Encrypted .wNTD files, one of whose names is the AES IV")
 
 2. Ok, while one of these filenames is our IV, we still need the key before we can decrypt anything.  Let's try to see what we can get from that zip file.  From our intel, we know that the group uses L33T speak in communications and code - and we have seen some of that up to this point.  
 
-![image showing ssh login motd](img/c21-q2-phrase.png)
+![Tail of the SSH login MOTD skull banner with a red arrow pointing at the L33T-speak taunt "We are the w4Nt3D. Let's play a game, shall we?", the source of candidate password words.](img/c21-q2-phrase.png "MOTD phrase supplying L33T-speak base words")
 
 3. This, filenames, and extensions can give us a good start on developing a pattern.  If we consider the words we've seen up to this point: `[the,wanted,we,are,play,game,shall,want,you]` we can start to build a tailored word list to attempt brute force on the zip password. 
 
@@ -92,7 +92,7 @@ echo -e "the\nwanted\nwe\nare\nplay\ngame\nshall\nwant\nyou" > base_words.txt
 
 **Output**
 
-![image showing echo command](img/base-words-file.png)
+![Kali terminal (user@kali-rrt) running "cat base_words.txt", which prints the nine base words one per line: wanted, we, are, play, game, shall, want, you, the.](img/base-words-file.png "base_words.txt seeded with the observed L33T words")
 
 Next, let's make a python script to build a rule for `hashcat` to then build us a word list.    
 
@@ -368,7 +368,7 @@ The script will stop after the correct password is found.
 
 **Output**
 
-![Image of zip extraction](img/c21-q2-zipsolver.png)
+![zip_solver.py output reporting 5,451,776 total passwords to try and then "PASSWORD FOUND after 632,917 attempts (148.6s)" with "Password: th3 Ar3 W4nTeD", the suggested extract command "unzip -P 'th3 Ar3 W4nTeD' W3_WANT_Y0U.zip", and confirmation it auto-extracted w4Nt3D.txt; red arrows mark the recovered password and extraction lines.](img/c21-q2-zipsolver.png "zip_solver.py recovering the archive password")
 
 **NOTE:** This example script does not unzip the file, just produces the password.
 
@@ -407,7 +407,7 @@ cat w4Nt3D.txt
 
 3. The challenger should then use the decryptor to test the found AES_KEY and AES_IV to try decrypt the `encrypted folder's contents`. A correct key pair yields a success message as seen in the below image.
 
-![Using the decryptor](img/c21-q2-1decrypter.png) 
+![The 3CRYPT0R decryptor run interactively: it prompts for and receives the encrypted folder /home/user/.cef22268edda, the AES key, the AES IV, and the output directory /home/user/decrypted/, then prints "Decryption successful. Files saved in: /home/user/decrypted/".](img/c21-q2-1decrypter.png "Decryptor confirming a correct key and IV pair") 
 
 Rather than individually test all possible IV values (filenames), you guessed it - let's write a script!  
 
@@ -769,7 +769,7 @@ The answer to this question is the AES_IV that worked with the AES_KEY to decryp
 
 **Example**
 
-![List of decrypted files with new extension](img/c21-q3-2.png)
+![ls -lhart of the decrypted directory showing the recovered files now carrying a .wNTD.txt extension, nearly all 21K in size, with one anomalous 29-byte file (MTGcsPs0LfjGWJWZAFwxwIzZuKgufKXF.wNTD.txt) highlighted in a red box as the outlier worth investigating.](img/c21-q3-2.png "Decrypted files, with the size-anomalous credential file highlighted")
 
 The decrypted files may contain credentials. Use the following command to quickly review the first few lines of each file:
 
@@ -1089,9 +1089,9 @@ TOKEN3 is the value of the `Password` for `ubuntu_service` found in the decrypte
 
 1. The solution to this particular question can be found by "calling the adversary" using the `Call_Mom` binary found on the `Desktop` of the `ubuntu_service` user:
 
-![Image of user ssh'ing into ubuntu_service account](img/c21-q4-ssh.png)
+![Terminal running "ssh ubuntu_service@corp-ubus-24lap", displaying the same ASCII-art skull MOTD and the taunt "We are the w4Nt3D. Let's play a game, shall we?", then the ubuntu_service password prompt.](img/c21-q4-ssh.png "SSH into the ubuntu_service account with the recovered password")
 
-![Image of ubuntu_service motd](img/c21-q4-motd.png)
+![The ubuntu_service login MOTD showing a blue ASCII-art skull banner and the message "Call home please. I miss you.", followed by "ls" revealing a Desktop folder and "ls Desktop/" listing the Call_Mom binary and README.txt.](img/c21-q4-motd.png "ubuntu_service MOTD pointing to the Call_Mom binary")
 
 To start `call home` to the syndicate use the binary named below to advance the challenge towards the final token:
 
@@ -1101,11 +1101,11 @@ To start `call home` to the syndicate use the binary named below to advance the 
 
 2. If the wrong password is entered, the following behavior presents itself:
 
-![Incorrect password entered](img/c21-q4-bad-pw.png)
+![Running "./Call_Mom" from the Desktop, which prompts "Enter the password:" and then rejects the attempt with "Incorrect password."](img/c21-q4-bad-pw.png "Call_Mom rejecting an incorrect password")
 
 To create the final password, the challenger must heed the words of the README:
 
-![Hint](img/c21-q4-hint.png)
+![Output of "cat README.txt" reading "Unity is key. All calls will be answered as they are received." followed by an "Operator note: No one ever remembers the punctuation at the front." — hints to concatenate the three tokens in order and keep the leading dot.](img/c21-q4-hint.png "README hint for building the Call_Mom password")
 
 3. The README hints to "unity" and "as they are received" - this is to lead us to the calling code (password) by combining all three tokens we have received so far:
 
@@ -1130,7 +1130,7 @@ TOKEN1 (FOLDER) + TOKEN2 (IV 12 chars) + TOKEN3 (PW for ubuntu_service):
 
 As a thank you for catching their mistake, a final token is left for the challenger:
 
-![Final token presented post call with Chase (leader)](img/q4-answer.png)
+![Call_Mom accepting the password and simulating a call: "Dialing............... Connected", an "=== OPERATOR DETECTED ===" alert, a message conceding "that means we failed ... for now :)", and the closing line "[^_^] My regards: PCCC{0D-04-6061-wtPt}" signed by Chase, then "Disconnected".](img/q4-answer.png "Final PCCC token revealed after the simulated call with Chase")
 
 **IMPORTANT**: Please note that the final token for this engagement harbors the `PCCC{TEXT} format`.
 
