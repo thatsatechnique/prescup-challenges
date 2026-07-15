@@ -1,0 +1,141 @@
+x-challenge:
+  # Required: Name of the challenge displayed to participants
+  name: "Finsta"
+
+  # Required: Detailed description shown to participants
+  description: |
+    # Finsta
+
+    Your team has been tasked with infiltrating a social media site.
+
+    **NICE Work Roles**
+
+    - [Exploitation Analysis](https://niccs.cisa.gov/workforce-development/nice-framework/)
+    - [Vulnerability Analysis](https://niccs.cisa.gov/workforce-development/nice-framework/)
+
+    **NICE Tasks**
+
+    - [T1091](https://niccs.cisa.gov/workforce-development/nice-framework/): Perform authorized penetration testing on enterprise network assets.
+    - [T1118](https://niccs.cisa.gov/workforce-development/nice-framework/): Identify vulnerabilities.
+
+    ## Background
+
+    Use the provided Kali machine to investigate and exploit `finsta.pccc`, a new social media site.
+
+    ## Getting Started
+
+    Log in to the provided Kali VM and visit `http://finsta.pccc` to access the social media site. You can (and should) create your own account(s) on `Finsta.pccc`. Visit `challenge.pccc` to have Greg browse `finsta.pccc` for Token 4. The Kali VM has `wfuzz` installed with the default wordlist at `/usr/share/wfuzz/wordlist/general/common.txt` and `jwt` is also installed.
+
+    ## Submission
+
+    There are 4 tokens to retrieve in this challenge. Each token has the format `PCCC{xxxxxx}` where the contents are 6 hexadecimal characters. The tokens can be retrieved in any order. Token 4 requires visiting `challenge.pccc` to trigger user interaction (`challenge.pccc` does not grant Token 4).
+
+    - Token 1: Retrieve the token stored as the password of the social media user `targettim`.
+        - You do not need to (and can not) log in as `targettim` or any of the other existing users. You can create your own account, however.
+    - Token 2: The user `finsta` accidently posted a token, but quickly deleted it. We know deleted posts are not stored in the database, but believe they are still accessible elsewhere. Recover the token.
+    - Token 3: This token can be recovered from the home page after becoming a premium user.
+    - Token 4: The user `gregariousgreg` has a token in his cookies with `httpOnly=false`. Visit `challenge.pccc` and click grade to trigger `gregariousgreg` to browse `finsta.pccc` with this token. Greg will search for posts he likes and visit the poster's profile page. Note `challenge.pccc` will not provide the token.
+
+    ## Grading
+
+    You can visit `challenge.pccc` and click the grade button to trigger `gregariousgreg` for Token 4, but `challenge.pccc` will not provide Token 4 (instead, the token must be extracted from Greg's cookies).
+
+    ## System and Tool Credentials
+
+    |system/tool|username|password|
+    |-----------|--------|--------|
+    |kali|user|password|
+
+    ## Note
+
+    Attacking or unauthorized access to `challenge.pccc` is forbidden. You may only use the provided web page to view challenge progress and download any challenge artifacts that are provided.
+
+  # Optional: Tabler icon name with Tb prefix
+  icon: "TbBrandInstagram"
+
+  tags:
+    - season:pc6
+    - track:teams
+    - round:2
+    - role:vulnerability-analysis
+    - role:exploitation-analyst
+    - topics:web
+
+  # Optional: Challenge summary/overview
+  summary: |
+    Your team has been tasked with infiltrating a social media site.
+
+  # Optional: Template definitions for reusable values
+  templates:
+    # Define reusable templates with anchors
+    tokens-flag: &tokens-flag_template "fake.hexify('PCCC{^^^^^^}')"
+
+  variables:
+    tokenSQL-flag:
+      template: *tokens-flag_template
+      default: &tokenSQL-flag_default "PCCC{a1b2c3}"
+    tokenAPI-flag:
+      template: *tokens-flag_template
+      default: &tokenAPI-flag_default "PCCC{d4e5f6}"
+    tokenJWT-flag:
+      template: *tokens-flag_template
+      default: &tokenJWT-flag_default "PCCC{789abc}"
+    tokenXSS-flag:
+      template: *tokens-flag_template
+      default: &tokenXSS-flag_default "PCCC{def012}"
+    jwtSecret:
+      template: "fake.hexify('^^^^^^^^^^^^^^^^')"
+      default: &jwtSecret_default "8159345abcedef37"
+
+  questions:
+  - name: Question 1
+    body: Retrieve the token stored as the password of the social media user `targettim`.
+    placeholder: "PCCC{######}"
+    points: 440
+    answer: *tokenSQL-flag_default
+    max_attempts: 100
+  - name: Question 2
+    body: Recover the token that the user `finsta` accidentally posted and then deleted.
+    placeholder: "PCCC{######}"
+    points: 440
+    answer: *tokenAPI-flag_default
+    max_attempts: 100
+  - name: Question 3
+    body: Recover the token shown on the home page after becoming a premium user.
+    placeholder: "PCCC{######}"
+    points: 660
+    answer: *tokenJWT-flag_default
+    max_attempts: 100
+  - name: Question 4
+    body: Recover the token in `gregariousgreg`'s cookies by triggering his visit from `challenge.pccc`.
+    placeholder: "PCCC{######}"
+    points: 660
+    answer: *tokenXSS-flag_default
+    max_attempts: 100
+
+services:
+  finsta:
+    build: ./finsta
+    hostname: finsta.pccc
+    environment:
+      tokenSQL: *tokenSQL-flag_default
+      tokenAPI: *tokenAPI-flag_default
+      tokenJWT: *tokenJWT-flag_default
+      jwtSecret: *jwtSecret_default
+    networks:
+      - competitor_net
+
+  grader:
+    build: ./scripts
+    hostname: challenge.pccc
+    environment:
+      tokenXSS: *tokenXSS-flag_default
+      pc_year: "6"
+      challenge_name: Finsta
+    networks:
+      - competitor_net
+
+networks:
+  competitor_net:
+    internal: true
+    # external: true

@@ -17,6 +17,10 @@ All of the challenge content can be found in the respective year season director
 | `/pc3`    | 2021    | President's Cup: **Season 3** |
 | `/pc4`    | 2022    | President's Cup: **Season 4** |
 | `/pc5`    | 2024    | President's Cup: **Season 5** |
+| `/pc6-round1` | 2025 | President's Cup: **Season 6** (Round 1) |
+| `/pc6`    | 2025    | President's Cup: **Season 6** (Rounds 2-3) |
+| `/pc7`    | 2026    | President's Cup: **Season 7** |
+| `/conversions` | 2024-25 | Earlier-season challenges converted to the CTF-NG platform format |
 | `/skilling-continuation-labs`    | 2024-25    | Skilling Continuation Labs |
 
 ## ⚠️ Large Files ⚠️

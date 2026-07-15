@@ -1,0 +1,17 @@
+startup:
+  scripts:
+    - empty.py
+
+hosted_files:
+  enabled: false
+
+grading:
+  enabled: true
+  mode: button
+  grading_script: runXSS.py
+  rate_limit: 0
+  token_location: guestinfo
+  parts:
+    GradingXSS:
+      token_name: tokenXSS
+      text: "Trigger gregariousgreg to browse finsta.pccc so his token cookie can be captured."
